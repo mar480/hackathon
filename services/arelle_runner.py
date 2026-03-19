@@ -27,8 +27,6 @@ class ArelleRunner:
         *,
         disclosure_system: Optional[str] = None,
         plugins: Optional[str] = None,
-        facts_csv_path: Optional[Path] = None,
-        fact_table_csv_path: Optional[Path] = None,
         log_file_path: Optional[Path] = None,
         validate: bool = False,
         formula: bool = False,
@@ -36,11 +34,14 @@ class ArelleRunner:
     ) -> ArelleRunResult:
         cmd = [self.arelle_cmd, f"--file={file_path}"]
 
-        if disclosure_system and disclosure_system != "none":
-            cmd.append(f"--disclosureSystem={disclosure_system}")
-
         if plugins:
             cmd.append(f"--plugins={plugins}")
+
+        # Important: HMRC is handled via dedicated CLI flag
+        if disclosure_system == "hmrc":
+            cmd.append("--hmrc")
+        elif disclosure_system and disclosure_system != "none":
+            cmd.append(f"--disclosureSystem={disclosure_system}")
 
         if validate:
             cmd.append("--validate")
@@ -50,12 +51,6 @@ class ArelleRunner:
 
         if label_lang:
             cmd.append(f"--labelLang={label_lang}")
-
-        if facts_csv_path:
-            cmd.append(f"--facts={facts_csv_path}")
-
-        if fact_table_csv_path:
-            cmd.append(f"--factTable={fact_table_csv_path}")
 
         if log_file_path:
             cmd.append(f"--logFile={log_file_path}")

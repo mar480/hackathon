@@ -5,11 +5,11 @@ from config.settings import OUTPUT_DIR
 from models.job_options import JobOptions
 from services.arelle_runner import ArelleRunner
 from services.validation_service import ValidationService
-from services.extraction_service import ExtractionService
+from services.fact_table_service import FactTableService
 from ui.sidebar import render_sidebar
 from ui.upload_panel import render_uploader
 from ui.validation_panel import render_validation_result
-from ui.extraction_panel import render_extraction_result
+from ui.extraction_panel import render_fact_table_result
 from utils.files import validate_uploaded_file
 from utils.temp_workspace import temp_workspace
 
@@ -29,10 +29,7 @@ uploaded_file = render_uploader()
 
 runner = ArelleRunner()
 validation_service = ValidationService(runner)
-extraction_service = ExtractionService(runner)
-
-if "last_action" not in st.session_state:
-    st.session_state.last_action = None
+fact_table_service = FactTableService()
 
 if uploaded_file is not None:
     errors = validate_uploaded_file(uploaded_file)
@@ -57,21 +54,12 @@ if uploaded_file is not None:
                         )
                         render_validation_result(result)
 
-                    elif options.action == "facts_csv":
-                        result = extraction_service.extract_facts_csv(
+                    elif options.action == "facts_table":
+                        result = fact_table_service.build_fact_table(
                             file_path=input_path,
-                            workspace=workspace,
                             options=options,
                         )
-                        render_extraction_result(result, "facts.csv")
-
-                    elif options.action == "fact_table_csv":
-                        result = extraction_service.extract_fact_table_csv(
-                            file_path=input_path,
-                            workspace=workspace,
-                            options=options,
-                        )
-                        render_extraction_result(result, "fact_table.csv")
+                        render_fact_table_result(result)
 
                     else:
                         st.error(f"Unsupported action: {options.action}")

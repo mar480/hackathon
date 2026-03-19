@@ -1,27 +1,20 @@
 import streamlit as st
-from services.extraction_service import ExtractionResult
+from services.fact_table_service import FactTableResult
 
 
-def render_extraction_result(result: ExtractionResult, default_filename: str):
+def render_fact_table_result(result: FactTableResult):
     if result.ok:
-        st.success("Extraction completed.")
+        st.success(f"Extracted {result.row_count} facts.")
     else:
-        st.error("Extraction failed or produced no CSV output.")
+        st.error(result.error or "Fact extraction failed.")
+        return
 
-    with st.expander("Arelle command output"):
-        st.code(" ".join(result.run_result.command), language="bash")
-        st.subheader("stdout")
-        st.text(result.run_result.stdout or "(empty)")
-        st.subheader("stderr")
-        st.text(result.run_result.stderr or "(empty)")
-
-    st.subheader("Preview")
     st.dataframe(result.dataframe, use_container_width=True)
 
-    if result.csv_path.exists():
-        st.download_button(
-            "Download CSV",
-            data=result.csv_path.read_bytes(),
-            file_name=default_filename,
-            mime="text/csv",
-        )
+    csv_bytes = result.dataframe.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        "Download fact table CSV",
+        data=csv_bytes,
+        file_name="fact_table_enriched.csv",
+        mime="text/csv",
+    )

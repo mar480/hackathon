@@ -7,13 +7,13 @@ def render_sidebar() -> JobOptions:
 
     action = st.sidebar.selectbox(
         "Action",
-        options=["validate", "facts_csv", "fact_table_csv"],
+        options=["validate", "facts_table"],
         index=0,
     )
 
     disclosure_system = st.sidebar.selectbox(
         "Disclosure system",
-        options=["none", "hmrc", "esef"],
+        options=["none", "efm", "esef", "hmrc"],
         index=0,
     )
 
@@ -31,10 +31,13 @@ def render_sidebar() -> JobOptions:
         index=0,
     )
 
+    include_dimensions = st.sidebar.checkbox("Include dimensions", value=True)
+
     return JobOptions(
         action=action,
         disclosure_system=disclosure_system,
         plugins=plugins or None,
         formula=formula,
         label_lang=label_lang,
+        include_dimensions=include_dimensions,
     )
