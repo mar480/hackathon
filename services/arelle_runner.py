@@ -44,6 +44,9 @@ class ArelleRunner:
         # HMRC validation is provided by the UK validation plugin
         if disclosure_system == "hmrc" and "validate/UK" not in plugin_list:
             plugin_list.append("validate/UK")
+        
+        if disclosure_system == "esef" and "validate/esef" not in plugin_list:
+            plugin_list.append("validate/esef")
 
         if plugin_list:
             cmd.append(f"--plugins={','.join(plugin_list)}")
