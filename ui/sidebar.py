@@ -1,0 +1,40 @@
+import streamlit as st
+from models.job_options import JobOptions
+
+
+def render_sidebar() -> JobOptions:
+    st.sidebar.header("Options")
+
+    action = st.sidebar.selectbox(
+        "Action",
+        options=["validate", "facts_csv", "fact_table_csv"],
+        index=0,
+    )
+
+    disclosure_system = st.sidebar.selectbox(
+        "Disclosure system",
+        options=["none", "efm", "esef"],
+        index=0,
+    )
+
+    plugins = st.sidebar.text_input(
+        "Plugins (optional)",
+        value="",
+        help="Comma-separated Arelle plugin names or paths if needed.",
+    )
+
+    formula = st.sidebar.checkbox("Run formula processing", value=False)
+
+    label_lang = st.sidebar.selectbox(
+        "Label language",
+        options=["en", "en-GB", "cy"],
+        index=0,
+    )
+
+    return JobOptions(
+        action=action,
+        disclosure_system=disclosure_system,
+        plugins=plugins or None,
+        formula=formula,
+        label_lang=label_lang,
+    )

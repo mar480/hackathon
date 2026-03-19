@@ -1,0 +1,79 @@
+from pathlib import Path
+import streamlit as st
+
+from config.settings import OUTPUT_DIR
+from models.job_options import JobOptions
+from services.arelle_runner import ArelleRunner
+from services.validation_service import ValidationService
+from services.extraction_service import ExtractionService
+from ui.sidebar import render_sidebar
+from ui.upload_panel import render_uploader
+from ui.validation_panel import render_validation_result
+from ui.extraction_panel import render_extraction_result
+from utils.files import validate_uploaded_file
+from utils.temp_workspace import temp_workspace
+
+
+st.set_page_config(
+    page_title="Arelle Hackathon Workbench",
+    layout="wide",
+)
+
+OUTPUT_DIR.mkdir(exist_ok=True)
+
+st.title("Arelle Hackathon Workbench")
+st.caption("Upload a filing, choose an action, and download the result.")
+
+options: JobOptions = render_sidebar()
+uploaded_file = render_uploader()
+
+runner = ArelleRunner()
+validation_service = ValidationService(runner)
+extraction_service = ExtractionService(runner)
+
+if "last_action" not in st.session_state:
+    st.session_state.last_action = None
+
+if uploaded_file is not None:
+    errors = validate_uploaded_file(uploaded_file)
+
+    if errors:
+        for error in errors:
+            st.error(error)
+    else:
+        st.info(f"Ready to process: {uploaded_file.name}")
+
+        if st.button("Run"):
+            with st.spinner("Processing with Arelle..."):
+                with temp_workspace() as workspace:
+                    input_path = workspace / uploaded_file.name
+                    input_path.write_bytes(uploaded_file.getvalue())
+
+                    if options.action == "validate":
+                        result = validation_service.validate(
+                            file_path=input_path,
+                            workspace=workspace,
+                            options=options,
+                        )
+                        render_validation_result(result)
+
+                    elif options.action == "facts_csv":
+                        result = extraction_service.extract_facts_csv(
+                            file_path=input_path,
+                            workspace=workspace,
+                            options=options,
+                        )
+                        render_extraction_result(result, "facts.csv")
+
+                    elif options.action == "fact_table_csv":
+                        result = extraction_service.extract_fact_table_csv(
+                            file_path=input_path,
+                            workspace=workspace,
+                            options=options,
+                        )
+                        render_extraction_result(result, "fact_table.csv")
+
+                    else:
+                        st.error(f"Unsupported action: {options.action}")
+else:
+    st.write("Upload a file to begin.")
