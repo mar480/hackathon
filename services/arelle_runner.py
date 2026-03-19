@@ -34,13 +34,21 @@ class ArelleRunner:
     ) -> ArelleRunResult:
         cmd = [self.arelle_cmd, f"--file={file_path}"]
 
-        if plugins:
-            cmd.append(f"--plugins={plugins}")
+        plugin_list: list[str] = []
 
-        # Important: HMRC is handled via dedicated CLI flag
-        if disclosure_system == "hmrc":
-            cmd.append("--hmrc")
-        elif disclosure_system and disclosure_system != "none":
+        if plugins:
+            plugin_list.extend(
+                p.strip() for p in plugins.split(",") if p.strip()
+            )
+
+        # HMRC validation is provided by the UK validation plugin
+        if disclosure_system == "hmrc" and "validate/UK" not in plugin_list:
+            plugin_list.append("validate/UK")
+
+        if plugin_list:
+            cmd.append(f"--plugins={','.join(plugin_list)}")
+
+        if disclosure_system and disclosure_system != "none":
             cmd.append(f"--disclosureSystem={disclosure_system}")
 
         if validate:
