@@ -2,4 +2,5 @@ streamlit>=1.55
 pandas>=2.2
 openpyxl>=3.1
 pydantic>=2.8
-arelle-release[ESEF]
+arelle-release
+tinycss2==1.5.1
