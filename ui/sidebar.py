@@ -13,7 +13,7 @@ def render_sidebar() -> JobOptions:
 
     disclosure_system = st.sidebar.selectbox(
         "Disclosure system",
-        options=["none", "efm", "esef"],
+        options=["none", "hmrc", "esef"],
         index=0,
     )
 
