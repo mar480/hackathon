@@ -46,7 +46,7 @@ class ArelleRunner:
             plugin_list.append("validate/UK")
         
         if disclosure_system == "esef" and "validate/esef" not in plugin_list:
-            plugin_list.append("validate/esef")
+            plugin_list.append("validate/ESEF")
 
         if plugin_list:
             cmd.append(f"--plugins={','.join(plugin_list)}")
