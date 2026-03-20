@@ -17,7 +17,7 @@ from utils.temp_workspace import temp_workspace
 st.set_page_config(
     page_title="FRC Hackathon Arelle",
     layout="wide",
-    page_icon = "ui\img\favicon.png",
+    page_icon = r"ui\img\favicon.png",
 )
 
 OUTPUT_DIR.mkdir(exist_ok=True)
