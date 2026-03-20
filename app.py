@@ -15,14 +15,15 @@ from utils.temp_workspace import temp_workspace
 
 
 st.set_page_config(
-    page_title="Arelle Hackathon Workbench",
+    page_title="FRC Hackathon Arelle",
     layout="wide",
+    page_icon = "ui\img\favicon.png",
 )
 
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-st.title("Arelle Hackathon Workbench")
-st.caption("Upload a filing, choose an action, and download the result.")
+st.title("FRC Hackathon Arelle")
+st.caption("Upload a filing, extract facts or validate, and download the result.")
 
 options: JobOptions = render_sidebar()
 uploaded_file = render_uploader()
