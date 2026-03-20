@@ -7,15 +7,31 @@ def render_sidebar() -> JobOptions:
 
     action = st.sidebar.selectbox(
         "Action",
-        options=["validate", "facts_table"],
+        options=["facts_table", "validate"],
         index=0,
     )
 
-    disclosure_system = st.sidebar.selectbox(
-        "Disclosure system",
-        options=["none", "hmrc", "esef"],
-        index=0,
-    )
+    disclosure_system = "none"
+    label_lang = "en"
+    include_dimensions = True
+
+    if action == "validate":
+        disclosure_system = st.sidebar.selectbox(
+            "Disclosure system",
+            options=["none", "esef", "hmrc"],
+            index=2,
+        )
+    else:
+        label_lang = st.sidebar.selectbox(
+            "Label language",
+            options=["en", "cy"],
+            index=0,
+        )
+
+        include_dimensions = st.sidebar.checkbox(
+            "Include dimensions",
+            value=True,
+        )
 
     plugins = st.sidebar.text_input(
         "Plugins (optional)",
@@ -23,21 +39,11 @@ def render_sidebar() -> JobOptions:
         help="Comma-separated Arelle plugin names or paths if needed.",
     )
 
-    formula = st.sidebar.checkbox("Run formula processing", value=False)
-
-    label_lang = st.sidebar.selectbox(
-        "Label language",
-        options=["en", "en-GB", "cy"],
-        index=0,
-    )
-
-    include_dimensions = st.sidebar.checkbox("Include dimensions", value=True)
-
     return JobOptions(
         action=action,
         disclosure_system=disclosure_system,
         plugins=plugins or None,
-        formula=formula,
+        formula=False,
         label_lang=label_lang,
         include_dimensions=include_dimensions,
     )
