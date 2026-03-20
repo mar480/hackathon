@@ -18,8 +18,8 @@ def render_sidebar() -> JobOptions:
     if action == "validate":
         disclosure_system = st.sidebar.selectbox(
             "Disclosure system",
-            options=["none", "esef", "hmrc"],
-            index=2,
+            options=["esef", "hmrc"],
+            index=0,
         )
     else:
         label_lang = st.sidebar.selectbox(

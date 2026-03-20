@@ -13,11 +13,13 @@ from ui.extraction_panel import render_fact_table_result
 from utils.files import validate_uploaded_file
 from utils.temp_workspace import temp_workspace
 
+BASE_DIR = Path(__file__).resolve().parent
+ICON_PATH = BASE_DIR / "ui" / "img" / "favicon.png"
 
 st.set_page_config(
     page_title="FRC Hackathon Arelle",
     layout="wide",
-    page_icon = r"ui\img\favicon.png",
+    page_icon = str(ICON_PATH),
 )
 
 OUTPUT_DIR.mkdir(exist_ok=True)
